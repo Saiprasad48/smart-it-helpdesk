@@ -3,11 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from app.db.base import Base
 from app.db.session import engine
-from app.db.session import get_db
 from app.models.user import User
 from app.models.ticket import Ticket
 from app.models.asset import Asset
-
+from app.api.auth import router as auth_router
 Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Smart IT Helpdesk & Asset Management API",
@@ -25,16 +24,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.include_router(auth_router)
+
 @app.get("/")
 def root():
     return {
         "message": "Smart IT Helpdesk API is running successfully"
     }
+
 @app.get("/health")
 def health_check():
     return {
         "status": "healthy"
     }
+
 @app.get("/db-test")
 def test_database():
     with engine.connect() as connection:
