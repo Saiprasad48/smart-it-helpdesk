@@ -1,0 +1,41 @@
+text,category
+"wifi is not working in my room",Network
+"unable to connect to campus wifi",Network
+"internet keeps disconnecting",Network
+"network speed is very slow",Network
+"ethernet port is not working",Network
+"vpn connection failed",Network
+"cannot access online portal due to network issue",Network
+"printer is not connecting to network",Network
+"laptop screen is broken",Hardware
+"keyboard keys are not working",Hardware
+"mouse is not responding",Hardware
+"monitor is flickering",Hardware
+"laptop battery drains quickly",Hardware
+"desktop computer will not turn on",Hardware
+"printer has paper jam",Hardware
+"headset microphone is broken",Hardware
+"software installation failed",Software
+"application crashes when I open it",Software
+"microsoft office is not opening",Software
+"browser keeps freezing",Software
+"need help installing python",Software
+"zoom app is not working",Software
+"antivirus software is showing error",Software
+"system update failed",Software
+"forgot my password",Account Access
+"cannot login to my student account",Account Access
+"account is locked",Account Access
+"need password reset",Account Access
+"multi factor authentication not working",Account Access
+"cannot access email account",Account Access
+"my username is not recognized",Account Access
+"permission denied when opening portal",Account Access
+"need general IT help",Other
+"not sure what the issue is",Other
+"requesting technical support",Other
+"need help with computer setup",Other
+"having an unknown problem",Other
+"IT support needed for my device",Other
+"general question about technology services",Other
+"need assistance from helpdesk",Other

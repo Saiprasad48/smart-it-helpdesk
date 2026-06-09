@@ -5,6 +5,7 @@ from app.api.auth import get_current_user
 from app.db.session import get_db
 from app.models.ticket import Ticket
 from app.models.user import User
+from app.services.ticket_classifier import predict_ticket_category
 from app.schemas.ticket import (
     TicketCreate,
     TicketUpdate,
@@ -29,10 +30,16 @@ def create_ticket(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    predicted_category = predict_ticket_category(
+        ticket_data.title,
+        ticket_data.description
+    )
+
     new_ticket = Ticket(
         title=ticket_data.title,
         description=ticket_data.description,
         priority=ticket_data.priority,
+        category=predicted_category,
         created_by=current_user.id
     )
     db.add(new_ticket)
