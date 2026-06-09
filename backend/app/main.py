@@ -7,6 +7,7 @@ from app.models.user import User
 from app.models.ticket import Ticket
 from app.models.asset import Asset
 from app.api.auth import router as auth_router
+from app.api.tickets import router as tickets_router
 Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Smart IT Helpdesk & Asset Management API",
@@ -25,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(auth_router)
-
+app.include_router(tickets_router)
 @app.get("/")
 def root():
     return {
