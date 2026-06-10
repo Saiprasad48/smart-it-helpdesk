@@ -127,7 +127,7 @@ Password: Password123
 ### 1. Clone the Repository
 
 ```bash
-git clone <your-github-repo-url>
+git clone https://github.com/Saiprasad48/smart-it-helpdesk
 cd smart-it-helpdesk
 ```
 
@@ -315,3 +315,9 @@ Network
 - Add CI/CD pipeline using GitHub Actions
 - Deploy the application to AWS, Render, Railway, or Fly.io
 - Add unit and integration tests for backend APIs
+
+---
+
+## Author
+
+**Sai Prasad Reddy Kukudala** 
