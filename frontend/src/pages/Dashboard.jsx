@@ -37,9 +37,15 @@ function Dashboard() {
           <h2>Smart IT Helpdesk</h2>
           <p>Ticketing, assets, and support analytics</p>
         </div>
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
-        </button>
+        <div className="nav-actions">
+          <button onClick={() => navigate("/tickets")} className="secondary-btn">
+            Tickets
+          </button>
+
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
+        </div>
       </nav>
       {error && <div className="error-message dashboard-error">{error}</div>}
       {user && (
