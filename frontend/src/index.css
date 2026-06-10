@@ -294,3 +294,42 @@ td input {
     align-items: flex-start;
   }
 }
+.charts-grid {
+  margin: 28px 36px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.chart-card {
+  background: white;
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.chart-card h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.quick-actions button {
+  width: auto;
+}
+
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
