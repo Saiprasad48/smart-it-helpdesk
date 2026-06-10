@@ -131,6 +131,9 @@ function Tickets() {
           <button onClick={() => navigate("/dashboard")} className="secondary-btn">
             Dashboard
           </button>
+          <button onClick={() => navigate("/assets")} className="secondary-btn">
+            Assets
+          </button>
           <button onClick={handleLogout} className="logout-btn">
             Logout
           </button>

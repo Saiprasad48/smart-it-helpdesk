@@ -41,7 +41,9 @@ function Dashboard() {
           <button onClick={() => navigate("/tickets")} className="secondary-btn">
             Tickets
           </button>
-
+          <button onClick={() => navigate("/assets")} className="secondary-btn">
+            Assets
+          </button>
           <button onClick={handleLogout} className="logout-btn">
             Logout
           </button>

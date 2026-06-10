@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Tickets from "./pages/Tickets";
+import Assets from "./pages/Assets";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -11,7 +12,6 @@ function ProtectedRoute({ children }) {
   }
   return children;
 }
-
 function App() {
   return (
     <Routes>
@@ -31,6 +31,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Tickets />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/assets"
+        element={
+          <ProtectedRoute>
+            <Assets />
           </ProtectedRoute>
         }
       />
