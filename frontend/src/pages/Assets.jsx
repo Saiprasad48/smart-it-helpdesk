@@ -5,6 +5,7 @@ import api from "../api/api";
 function Assets() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const [assets, setAssets] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -23,6 +24,10 @@ function Assets() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+  };
+  const getUserName = (userId) => {
+    const foundUser = users.find((item) => item.id === userId);
+    return foundUser ? `${foundUser.full_name} (${foundUser.role})` : userId;
   };
   const fetchAssets = async () => {
     const response = await api.get("/assets/");
@@ -47,6 +52,15 @@ function Assets() {
       try {
         const userResponse = await api.get("/auth/me");
         setUser(userResponse.data);
+        if (
+          userResponse.data.role === "admin" ||
+          userResponse.data.role === "it_staff"
+        ) {
+          const usersResponse = await api.get("/users/");
+          setUsers(usersResponse.data);
+        } else {
+          setUsers([userResponse.data]);
+        }
         await fetchAssets();
       } catch (err) {
         localStorage.removeItem("token");
@@ -122,7 +136,7 @@ function Assets() {
     setSuccess("");
     const assignedTo = Number(assignValues[assetId]);
     if (!assignedTo) {
-      setError("Please enter a valid user ID.");
+      setError("Please select a user.");
       return;
     }
     try {
@@ -132,7 +146,7 @@ function Assets() {
       setSuccess("Asset assigned successfully.");
       await fetchAssets();
     } catch (err) {
-      setError("Failed to assign asset. Please use a valid user ID.");
+      setError("Failed to assign asset. Please select a valid user.");
     }
   };
   return (
@@ -267,11 +281,7 @@ function Assets() {
                         <select
                           value={editValues[asset.id]?.asset_type || asset.asset_type}
                           onChange={(event) =>
-                            handleEditChange(
-                              asset.id,
-                              "asset_type",
-                              event.target.value
-                            )
+                            handleEditChange(asset.id, "asset_type", event.target.value)
                           }
                         >
                           <option value="Laptop">Laptop</option>
@@ -346,7 +356,11 @@ function Assets() {
                         <span className="badge">{asset.status}</span>
                       )}
                     </td>
-                    <td>{asset.assigned_to || "Unassigned"}</td>
+                    <td>
+                      {asset.assigned_to
+                        ? getUserName(asset.assigned_to)
+                        : "Unassigned"}
+                    </td>
                     {canManageAssets && (
                       <td>
                         <button
@@ -360,14 +374,19 @@ function Assets() {
                     {canManageAssets && (
                       <td>
                         <div className="assign-box">
-                          <input
-                            type="number"
+                          <select
                             value={assignValues[asset.id] || ""}
                             onChange={(event) =>
                               handleAssignChange(asset.id, event.target.value)
                             }
-                            placeholder="User ID"
-                          />
+                          >
+                            <option value="">Select user</option>
+                            {users.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                {item.full_name} — {item.role}
+                              </option>
+                            ))}
+                          </select>
                           <button
                             className="small-btn"
                             onClick={() => handleAssignAsset(asset.id)}

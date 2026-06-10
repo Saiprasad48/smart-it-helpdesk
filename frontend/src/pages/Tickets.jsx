@@ -5,6 +5,8 @@ import api from "../api/api";
 function Tickets() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [staffUsers, setStaffUsers] = useState([]);
   const [tickets, setTickets] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -20,6 +22,10 @@ function Tickets() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
+  };
+  const getUserName = (userId) => {
+    const foundUser = users.find((item) => item.id === userId);
+    return foundUser ? `${foundUser.full_name} (${foundUser.role})` : userId;
   };
   const fetchTickets = async () => {
     const response = await api.get("/tickets/");
@@ -42,6 +48,17 @@ function Tickets() {
       try {
         const userResponse = await api.get("/auth/me");
         setUser(userResponse.data);
+        if (
+          userResponse.data.role === "admin" ||
+          userResponse.data.role === "it_staff"
+        ) {
+          const usersResponse = await api.get("/users/");
+          const staffResponse = await api.get("/users/staff");
+          setUsers(usersResponse.data);
+          setStaffUsers(staffResponse.data);
+        } else {
+          setUsers([userResponse.data]);
+        }
         await fetchTickets();
       } catch (err) {
         localStorage.removeItem("token");
@@ -62,7 +79,6 @@ function Tickets() {
     setSuccess("");
     try {
       const response = await api.post("/tickets/", ticketForm);
-      setTickets([response.data, ...tickets]);
       setTicketForm({
         title: "",
         description: "",
@@ -107,7 +123,7 @@ function Tickets() {
     setSuccess("");
     const assignedTo = Number(assignValues[ticketId]);
     if (!assignedTo) {
-      setError("Please enter a valid staff/admin user ID.");
+      setError("Please select a staff/admin user.");
       return;
     }
     try {
@@ -117,7 +133,7 @@ function Tickets() {
       setSuccess("Ticket assigned successfully.");
       await fetchTickets();
     } catch (err) {
-      setError("Failed to assign ticket. Use a valid IT staff/admin user ID.");
+      setError("Failed to assign ticket. Please select a valid IT staff/admin user.");
     }
   };
   return (
@@ -222,11 +238,7 @@ function Tickets() {
                         <select
                           value={editValues[ticket.id]?.category || ticket.category}
                           onChange={(event) =>
-                            handleEditChange(
-                              ticket.id,
-                              "category",
-                              event.target.value
-                            )
+                            handleEditChange(ticket.id, "category", event.target.value)
                           }
                         >
                           <option value="Hardware">Hardware</option>
@@ -244,11 +256,7 @@ function Tickets() {
                         <select
                           value={editValues[ticket.id]?.priority || ticket.priority}
                           onChange={(event) =>
-                            handleEditChange(
-                              ticket.id,
-                              "priority",
-                              event.target.value
-                            )
+                            handleEditChange(ticket.id, "priority", event.target.value)
                           }
                         >
                           <option value="Low">Low</option>
@@ -265,11 +273,7 @@ function Tickets() {
                         <select
                           value={editValues[ticket.id]?.status || ticket.status}
                           onChange={(event) =>
-                            handleEditChange(
-                              ticket.id,
-                              "status",
-                              event.target.value
-                            )
+                            handleEditChange(ticket.id, "status", event.target.value)
                           }
                         >
                           <option value="Open">Open</option>
@@ -281,8 +285,12 @@ function Tickets() {
                         ticket.status
                       )}
                     </td>
-                    <td>{ticket.created_by}</td>
-                    <td>{ticket.assigned_to || "Unassigned"}</td>
+                    <td>{getUserName(ticket.created_by)}</td>
+                    <td>
+                      {ticket.assigned_to
+                        ? getUserName(ticket.assigned_to)
+                        : "Unassigned"}
+                    </td>
                     {canManageTickets && (
                       <td>
                         <button
@@ -296,14 +304,19 @@ function Tickets() {
                     {canManageTickets && (
                       <td>
                         <div className="assign-box">
-                          <input
-                            type="number"
+                          <select
                             value={assignValues[ticket.id] || ""}
                             onChange={(event) =>
                               handleAssignChange(ticket.id, event.target.value)
                             }
-                            placeholder="Staff ID"
-                          />
+                          >
+                            <option value="">Select staff</option>
+                            {staffUsers.map((staff) => (
+                              <option key={staff.id} value={staff.id}>
+                                {staff.full_name} — {staff.role}
+                              </option>
+                            ))}
+                          </select>
                           <button
                             className="small-btn"
                             onClick={() => handleAssignTicket(ticket.id)}
